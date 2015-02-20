@@ -15,9 +15,10 @@ class Motor(object):
         slash, e.g. /reflex_sf_f1
         '''
         self.pub = rospy.Publisher(name + '/command', Float64, queue_size=10)
-        self.angle_range = rospy.get_param(name[1:] + '/angle_range')
-        self.flipped = rospy.get_param(name[1:] + '/flipped')
-        self.zero_point = rospy.get_param(name[1:] + '/zero_point')
+        self.name = name[1:]
+        self.angle_range = rospy.get_param(self.name + '/angle_range')
+        self.flipped = rospy.get_param(self.name + '/flipped')
+        self.zero_point = rospy.get_param(self.name + '/zero_point')
         self.current_raw_position = 0.0
         self.current_pos = 0.0
         self.sub = rospy.Subscriber(name + '/state', JointState,
@@ -38,6 +39,7 @@ class Motor(object):
 
     def setMotorZeroPoint(self):
         self.zero_point = self.current_raw_position
+        rospy.set_param(self.name + '/zero_point', self.current_raw_position)
 
     def setMotorPosition(self, goal_pos):
         '''
