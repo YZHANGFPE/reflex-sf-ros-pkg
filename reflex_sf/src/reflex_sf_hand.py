@@ -84,9 +84,18 @@ motor, or 'q' to indicate that the zero point has been reached\n")
         )
         self.writeZeroPointDataToFile('reflex_sf_zero_points.yaml', data)
 
+    def disableTorque(self):
+        for motor in self.motors:
+            self.motors[motor].disableTorque()
+
+    def enableTorque(self):
+        for motor in self.motors:
+            self.motors[motor].enableTorque()
+
 
 def main():
     hand = ReflexSFHand()
+    rospy.on_shutdown(hand.disableTorque)
     rospy.spin()
 
 
