@@ -21,6 +21,7 @@ class Motor(object):
         self.flipped = rospy.get_param(self.name + '/flipped')
         self.current_raw_position = 0.0
         self.current_pos = 0.0
+        self.load = 0
         self.pub = rospy.Publisher(name + '/command', Float64, queue_size=10)
         self.torque_enable_service = rospy.ServiceProxy(name + '/torque_enable',
                                                         TorqueEnable)
@@ -103,3 +104,4 @@ class Motor(object):
             self.current_position = self.zero_point - self.current_raw_position
         else:
             self.current_position = self.current_raw_position - self.zero_point
+        self.load = data.load
