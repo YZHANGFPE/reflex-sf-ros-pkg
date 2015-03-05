@@ -22,6 +22,8 @@ class Motor(object):
         self.current_raw_position = 0.0
         self.current_pos = 0.0
         self.load = 0
+        self.OVERLOAD_THRESHOLD = 0.25
+        self.BLOCKED_VELOCITY = 0.1
         self.pub = rospy.Publisher(name + '/command', Float64, queue_size=10)
         self.torque_enable_service = rospy.ServiceProxy(name + '/torque_enable',
                                                         TorqueEnable)
@@ -82,6 +84,12 @@ class Motor(object):
         self.torque_enabled = False
         self.torque_enable_service(False)
 
+    def checkForOverload(self, load, velocity):
+        if abs(load) > self.OVERLOAD_THRESHOLD\
+           and abs(velocity) < self.BLOCKED_VELOCITY:
+            print("Motor %s overloaded, loosening", self.name)
+            self.loosen()
+
     def tighten(self, tighten_angle=0.05):
         '''
         Takes the given angle offset in radians and tightens the motor
@@ -104,4 +112,4 @@ class Motor(object):
             self.current_position = self.zero_point - self.current_raw_position
         else:
             self.current_position = self.current_raw_position - self.zero_point
-        self.load = data.load
+        self.checkForOverload(data.load, data.velocity)
