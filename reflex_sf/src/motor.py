@@ -87,7 +87,7 @@ class Motor(object):
     def checkForOverload(self, load, velocity):
         if abs(load) > self.OVERLOAD_THRESHOLD\
            and abs(velocity) < self.BLOCKED_VELOCITY:
-            print("Motor %s overloaded, loosening", self.name)
+            print("Motor %s overloaded, loosening" %self.name)
             self.loosen()
 
     def tighten(self, tighten_angle=0.05):
